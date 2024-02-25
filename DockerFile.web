@@ -1,0 +1,30 @@
+# Use a imagem oficial do PHP como base
+FROM php:latest
+
+# Instale as dependências
+RUN apt-get update && apt-get install -y \
+    nginx \
+    unzip \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql
+
+# Instale o Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copie o arquivo de configuração do Nginx para dentro do contêiner
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Defina o diretório de trabalho
+WORKDIR /var/www/html
+
+# Copie os arquivos do projeto
+COPY . .
+
+# Instale as dependências do Composer
+RUN composer install
+
+# Exponha a porta 80 para o Nginx
+EXPOSE 80
+
+# Comando padrão a ser executado ao iniciar o contêiner
+CMD ["nginx", "-g", "daemon off;"]
