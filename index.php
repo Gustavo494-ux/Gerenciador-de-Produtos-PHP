@@ -9,4 +9,5 @@ CarregarArquivoEnv(__DIR__);
 var_dump($_ENV);
 
 
+
 ?>
